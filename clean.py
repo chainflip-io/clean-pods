@@ -25,7 +25,7 @@ maxDays = int(os.environ["MAX_DAYS"])
 podStatus = os.environ["POD_STATUS"].replace(' ','').split(",")
 
 podLabel = os.environ["POD_LABEL"]
-encodedLabel = urllib.urlencode(podLabel)
+encodedLabel = urllib.parse.urlencode(podLabel)
 
 # --- Functions ---------------------------------------------------------------
 def callAPI(method, url):
