@@ -1,6 +1,6 @@
 import requests
 import json
-import urllib
+import urllib.parse
 import os
 from datetime import timedelta, datetime
 
@@ -25,7 +25,7 @@ maxDays = int(os.environ["MAX_DAYS"])
 podStatus = os.environ["POD_STATUS"].replace(' ','').split(",")
 
 podLabel = os.environ["POD_LABEL"]
-encodedLabel = urllib.parse.urlencode(podLabel)
+encodedLabel = urllib.parse.quote(podLabel)
 
 # --- Functions ---------------------------------------------------------------
 def callAPI(method, url):
@@ -35,7 +35,7 @@ def callAPI(method, url):
     return request.json()
 
 def getPods(namespace):
-    url = apiURL+"v1/namespaces/"+namespace+"/pods" + "?labelSelector=" + encodedLabel
+    url = apiURL+"v1/namespaces/"+namespace+"/pods"+"?labelSelector="+encodedLabel
     response = callAPI('GET', url)
     return response["items"]
 
