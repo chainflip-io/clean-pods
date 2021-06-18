@@ -1,5 +1,6 @@
 import requests
 import json
+import urllib
 import os
 from datetime import timedelta, datetime
 
@@ -23,6 +24,9 @@ maxDays = int(os.environ["MAX_DAYS"])
 # You can send a list of string separate by comma, Ex. "Pending, Running, Succeeded, Failed, Unknown"
 podStatus = os.environ["POD_STATUS"].replace(' ','').split(",")
 
+podLabel = os.environ["POD_LABEL"]
+encodedLabel = urllib.urlencode(podLabel)
+
 # --- Functions ---------------------------------------------------------------
 def callAPI(method, url):
     headers = {"Authorization": "Bearer "+token}
@@ -31,7 +35,7 @@ def callAPI(method, url):
     return request.json()
 
 def getPods(namespace):
-    url = apiURL+"v1/namespaces/"+namespace+"/pods"
+    url = apiURL+"v1/namespaces/"+namespace+"/pods" + "?labelSelector=" + encodedLabel
     response = callAPI('GET', url)
     return response["items"]
 
