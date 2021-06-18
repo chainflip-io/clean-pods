@@ -1,0 +1,40 @@
+kind: secret
+name: docker_username
+get:
+  path: repo-secret
+  name: docker_username
+---
+kind: secret
+name: docker_password
+get:
+  path: repo-secret
+  name: docker_password
+---
+kind: secret
+name: dockerconfigjson
+get:
+  path: dockerconfigjson
+  name: .dockerconfigjson
+---
+kind: pipeline
+name: build-clean-images
+type: kubernetes
+
+steps:
+  - name: chainflip-master
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: ghcr.io/chainflip-io/clean-images
+      registry: ghcr.io
+      tags: latest
+      cache_from: ghcr.io/chainflip-io/clean-images:latest
+
+trigger:
+  event:
+    - push
+  branch:
+    - main
